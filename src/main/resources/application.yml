@@ -1,0 +1,7 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: pelican-api
+  profiles:
+    active: '@spring.profiles.active@'
