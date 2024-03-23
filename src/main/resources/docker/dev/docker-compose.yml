@@ -1,0 +1,10 @@
+services:
+  mysql:
+    image: 'mysql:8.3.0'
+    environment:
+      - 'MYSQL_DATABASE=pelican-dev-db'
+      - 'MYSQL_PASSWORD=@spring.datasource.password@'
+      - 'MYSQL_ROOT_PASSWORD=@spring.datasource.root-password@'
+      - 'MYSQL_USER= @spring.datasource.username@'
+    ports:
+      - '3306'
