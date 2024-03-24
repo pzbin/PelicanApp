@@ -1,17 +1,17 @@
 package com.pelican.pelicanapi.post.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-@Getter
-@Setter
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class PostDto extends PostContentDto{
+public class PostContentDto {
 
-	private Integer id;
-	private Integer userId;
+	private String title;
+	private String body;
+	
 }
