@@ -1,10 +1,16 @@
 services:
   mysql:
     image: 'mysql:8.3.0'
+    container_name: pelican-mysql
+    restart: 'unless-stopped'
     environment:
-      - 'MYSQL_DATABASE=pelican-dev-db'
+      - 'MYSQL_DATABASE=@spring.datasource.name@'
       - 'MYSQL_PASSWORD=@spring.datasource.password@'
       - 'MYSQL_ROOT_PASSWORD=@spring.datasource.root-password@'
-      - 'MYSQL_USER= @spring.datasource.username@'
+      - 'MYSQL_USER=@spring.datasource.username@'
+    volumes:
+      - ./mysql-init:/init-scripts
+    command: >
+      --init-file /init-scripts/init.sql
     ports:
-      - '3306'
+      - '3306:3306'

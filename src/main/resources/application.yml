@@ -5,3 +5,16 @@ spring:
     name: pelican-api
   profiles:
     active: '@spring.profiles.active@'
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate	# do not create the structure, check if the fields of the orms are present in the real table
+    properties:
+      hibernate.jdbc.batch_size: 20
+      hibernate.cache.use_query_cache: false
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_structured_entries: false
+      hibernate.cache.use_minimal_puts: false
+logging:
+  org.hibernate.SQL: DEBUG
+  org.hibernate.type.descriptor.sql: TRACE
