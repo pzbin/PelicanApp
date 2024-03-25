@@ -31,6 +31,7 @@
 				<spring.datasource.username>myuser</spring.datasource.username>
 				<spring.datasource.password>secret</spring.datasource.password>
 				<spring.datasource.root-password>verysecret</spring.datasource.root-password>
+				<swagger.version>2.0.2</swagger.version>
 			</properties>
 			<!-- move this out if migrations would be used in other profiles -->
 			<dependencies>
@@ -91,6 +92,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+		   <groupId>org.springdoc</groupId>
+		   <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+		   <version>${swagger.version}</version>
 		</dependency>
 	</dependencies>
 

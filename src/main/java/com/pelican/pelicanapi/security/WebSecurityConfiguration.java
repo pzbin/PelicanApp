@@ -6,7 +6,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -17,7 +16,9 @@ public class WebSecurityConfiguration {
 	    http
 	 		.csrf((crsf) -> crsf.disable())
 	        .authorizeHttpRequests(requests -> requests
-	        		.requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll()
+	        		.requestMatchers("/api/**").permitAll()
+	        		.requestMatchers("/swagger-ui.html", "/swagger-ui/" ,"/swagger-ui/**", "/swagger-resources/**",
+	        				"/swagger-resources", "/v3/api-docs/**", "/proxy/**").permitAll()
 	        		)
 	        .httpBasic(Customizer.withDefaults());	//http (not https)
 	    return http.build();
