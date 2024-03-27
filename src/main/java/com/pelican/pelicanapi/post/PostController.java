@@ -37,7 +37,7 @@ public class PostController {
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PostDto> addPost(@RequestBody PostDto post){
 		
-		if(GeneralInputValidation.validatePostInputs(post, true)) {
+		if(!GeneralInputValidation.validatePostInputs(post, true)) {
 			GeneralInputValidation.handleInvalidInput();
 		}
 		
@@ -73,7 +73,7 @@ public class PostController {
 	@PatchMapping(path = "/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PostDto> patchPost(@PathVariable("postId") Integer postId, @RequestBody PostContentDto content){
 		
-		if(!GeneralInputValidation.validateId(postId) || GeneralInputValidation.validatePostContent(content)) {
+		if(!GeneralInputValidation.validateId(postId) || !GeneralInputValidation.validatePostContent(content)) {
 			GeneralInputValidation.handleInvalidInput();
 		}
 		
