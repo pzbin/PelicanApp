@@ -130,13 +130,17 @@ public class PostService {
 	@Transactional
 	protected boolean deletePostById(Integer postId) {
 		
-		//not throwing an exception - silently ingonred
-		postRepo.deleteById(postId);
-		return deletePostByIdRemote(postId);
+		if(deletePostByIdRemote(postId)){
+			//not throwing an exception - silently ingonred
+			postRepo.deleteById(postId);
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean deletePostByIdRemote(Integer postId) {
 		
+		// call are returning 200 success only for every id
 		ResponseEntity<PostDto> response = webClient
 				.delete()
 				.uri(uri -> uri.path(JsphApiPaths.POST_BY_ID.getPath()).build(postId.toString()))
@@ -179,7 +183,7 @@ public class PostService {
 		// I observe that api returns 200 even if to be patched record does not exist with partial result - rather validate the patched result
 		// I consider the patch successful remotely in case that the whole entity is returned
 		if(response.getStatusCode().is2xxSuccessful() && GeneralInputValidation.validatePostInputs(response.getBody(), false)) {
-			response.getBody();
+			return response.getBody();
 		}
 		
 		return null;
