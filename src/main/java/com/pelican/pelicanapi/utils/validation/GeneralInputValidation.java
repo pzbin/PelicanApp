@@ -26,7 +26,7 @@ public class GeneralInputValidation {
 		return Objects.nonNull(post) 
 				&& (inserting || Objects.nonNull(post.getId()))
 				&& Objects.nonNull(post.getUserId())
-				&& validatePostContent(null);
+				&& validatePostContent(new PostContentDto(post.getTitle(), post.getBody()));
 	}
 
 	public static boolean validatePostContent(PostContentDto postContent) {
