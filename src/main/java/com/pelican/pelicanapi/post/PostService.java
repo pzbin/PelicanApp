@@ -12,6 +12,7 @@ import com.pelican.pelicanapi.post.dto.PostContentDto;
 import com.pelican.pelicanapi.post.dto.PostDto;
 import com.pelican.pelicanapi.post.mapping.PostMapper;
 import com.pelican.pelicanapi.post.orm.Post;
+import com.pelican.pelicanapi.utils.validation.GeneralInputValidation;
 import com.pelican.pelicanapi.webclient.JsphApiPaths;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
@@ -50,6 +51,7 @@ public class PostService {
 			throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase());
 		}
 		catch (Exception e) {
+			// I would log the problem to db / logging system to know that external api Dto is not sync with local db (nullable fields without default values)
 			log.error("addPostLocal - Post persistance problem");
 			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, POST_PERSIST_ERR_MSG);
 		}
@@ -102,8 +104,8 @@ public class PostService {
 		try {
 			addPostLocal(postRem);	
 		}catch (Exception e) {
-			// problem on the server - log error but do not deny the data to user
 			log.error(POST_PERSIST_ERR_MSG);
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, POST_PERSIST_ERR_MSG);
 		}
 		
 		return postRem;
@@ -154,10 +156,10 @@ public class PostService {
 				.orElseThrow(() -> new HttpServerErrorException(HttpStatus.NOT_FOUND));
 
 		try {
-			Post postOrm = postMapper.postDtoToOrm(postDto);
-			postRepo.saveAndFlush(postOrm);
+			addPostLocal(postDto);
 		} catch (Exception e) {
 			log.error(POST_PERSIST_ERR_MSG);
+			throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, POST_PERSIST_ERR_MSG);
 		}
 
 		return postDto;
@@ -174,7 +176,13 @@ public class PostService {
 				.onErrorReturn(ResponseEntity.badRequest().body(null))
 				.block();	//sync call
 		
-		return response.getStatusCode().is2xxSuccessful()? response.getBody(): null;
+		// I observe that api returns 200 even if to be patched record does not exist with partial result - rather validate the patched result
+		// I consider the patch successful remotely in case that the whole entity is returned
+		if(response.getStatusCode().is2xxSuccessful() && GeneralInputValidation.validatePostInputs(response.getBody(), false)) {
+			response.getBody();
+		}
+		
+		return null;
 	}
 	
 }

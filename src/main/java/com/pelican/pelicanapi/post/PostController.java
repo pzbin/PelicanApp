@@ -1,6 +1,5 @@
 package com.pelican.pelicanapi.post;
 
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +37,10 @@ public class PostController {
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PostDto> addPost(@RequestBody PostDto post){
 		
+		if(GeneralInputValidation.validatePostInputs(post, true)) {
+			GeneralInputValidation.handleInvalidInput();
+		}
+		
 		if(!userService.validateUserId(post.getUserId())){
 			GeneralInputValidation.handleInvalidInput();
 		}
@@ -68,9 +71,9 @@ public class PostController {
 	}
 	
 	@PatchMapping(path = "/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PostDto> updatePost(@PathVariable("postId") Integer postId, @RequestBody PostContentDto content){
+	public ResponseEntity<PostDto> patchPost(@PathVariable("postId") Integer postId, @RequestBody PostContentDto content){
 		
-		if(!GeneralInputValidation.validateId(postId) || Objects.isNull(content.getBody()) || Objects.isNull(content.getTitle())) {
+		if(!GeneralInputValidation.validateId(postId) || GeneralInputValidation.validatePostContent(content)) {
 			GeneralInputValidation.handleInvalidInput();
 		}
 		
