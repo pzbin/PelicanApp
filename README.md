@@ -16,17 +16,18 @@ Instructions for the first run:
 Possibility 1: development friendly
 
     * Run as java application from src/main/java/com/pelicanapi/PelicanApiApplication.java with dev maven profile setup
-    * Application uses Maven resource plugin with resource filtering - resource file variables are replaced with in pom values from dev profile
+    * Application uses Maven resource plugin with resource filtering - variables in resource files are replaced with in pom values from dev profile
     * After the initiation of the app run - the springboot docker compose will execute the docker compose from resources - creation of testing mysql db + post table creation
     * Tested with Eclipse IDE
-
+	* tested on both windows and linux
 Possibility 2 - docker compose in the root of the project:
 
     * create executable jar - root of the projet - command line - mvn clean install - this will create an executable jar archive in the target folder in the root of the project
     * run the docker compose up - root of the projet - command line - 2 services - mysql container named 'pelican-mysql' + springboot application
     * mysql container contains 20 seconds healthcheck - user creation + permissions + post table (mysql init file)
-    * on healthy - springboot application jar is copied and run 
-    * containers share the network with their host
+    * on healthy - springboot application jar is copied to container and run 
+    * containers share the network with their host (reusage of the localhost ip defined in dev profile)
+	* I was not able to access the ports of the app on Windows machine, working fine on Linux Mint
 
 Mysql database connection (dev):
 
