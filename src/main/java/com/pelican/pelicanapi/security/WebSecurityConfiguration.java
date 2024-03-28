@@ -17,8 +17,10 @@ public class WebSecurityConfiguration {
 	 		.csrf((crsf) -> crsf.disable())
 	        .authorizeHttpRequests(requests -> requests
 	        		.requestMatchers("/api/**").permitAll()
+	        		.requestMatchers("/error/**").permitAll()
 	        		.requestMatchers("/swagger-ui.html", "/swagger-ui/" ,"/swagger-ui/**", "/swagger-resources/**",
 	        				"/swagger-resources", "/v3/api-docs/**", "/proxy/**").permitAll()
+	        		.anyRequest().authenticated()
 	        		)
 	        .httpBasic(Customizer.withDefaults());	//http (not https)
 	    return http.build();
