@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.2.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.pelican</groupId>
 	<artifactId>pelican-api</artifactId>
@@ -17,25 +17,66 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
-	
+
 	<profiles>
 		<profile>
 			<id>dev</id>
-			<activeByDefault>true</activeByDefault>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>dev</spring.profiles.active>
+				<spring.datasource.name>pelican_dev_db</spring.datasource.name>
+				<spring.datasource.url>jdbc:mysql://localhost:3306/${spring.datasource.name}?createDatabaseIfNotExist=true</spring.datasource.url>
+				<spring.datasource.username>myuser</spring.datasource.username>
+				<spring.datasource.password>secret</spring.datasource.password>
+				<spring.datasource.root-password>verysecret</spring.datasource.root-password>
+				<swagger.version>2.0.2</swagger.version>
+			</properties>
+			<!-- move this out if migrations would be used in other profiles -->
+			<dependencies>
+				<dependency>
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-mysql</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-docker-compose</artifactId>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-docker-compose</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.mysql</groupId>
@@ -51,6 +92,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+		   <groupId>org.springdoc</groupId>
+		   <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+		   <version>${swagger.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -68,6 +114,16 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <configuration>
+                <delimiters>
+                    <delimiter>@</delimiter>
+                    <delimiter>${*}</delimiter>
+                </delimiters>
+            </configuration>
+        </plugin>
 		</plugins>
 		<resources>
 			<resource>
